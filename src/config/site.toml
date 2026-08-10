@@ -43,14 +43,14 @@ maxResults = 6
 title = "Portfolio"
 kicker = "Selected work"
 subtitle = "Analytics and visualization projects."
-note = "Personal projects and sample work in analytics and visualization."
+note = "Analytics and visualization projects in operations and biotech."
 
 [config.profile]
 name = "Sandrine Boissel"
 handle = "sandrineboissel@gmail.com"
 role = "Operations · Analytics · Systems"
 email = "sandrineboissel@gmail.com"
-website = "https://sboissel-portfolio.vercel.app/"
+website = "https://sboissel1.gitlab.io/sboissel-portfolio"
 github = "https://gitlab.com/sboissel1"
 avatar = "/web-app-manifest-192x192.png"
 
