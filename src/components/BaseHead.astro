@@ -15,6 +15,39 @@ const { title, description, image } = Astro.props;
 const { site, fonts } = await getSiteConfig();
 ---
 
+<script is:inline>
+  (() => {
+    const storageKey = 'navfolio-theme';
+    const defaultTheme = 'light';
+    const root = document.documentElement;
+
+    const readTheme = () => {
+      try {
+        return localStorage.getItem(storageKey) === 'dark' ? 'dark' : defaultTheme;
+      } catch {
+        return defaultTheme;
+      }
+    };
+
+    const applyTheme = (theme) => {
+      root.dataset.theme = theme;
+      root.style.colorScheme = theme;
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute('content', theme === 'dark' ? '#171b18' : '#fdfdf9');
+    };
+
+    const theme = readTheme();
+    applyTheme(theme);
+
+    try {
+      if (localStorage.getItem(storageKey) !== 'dark') {
+        localStorage.setItem(storageKey, defaultTheme);
+      }
+    } catch {}
+  })();
+</script>
+
 <ThemeBaseHead
   title={title}
   description={description}
@@ -23,3 +56,29 @@ const { site, fonts } = await getSiteConfig();
   site={site}
   fonts={fonts}
 />
+
+<script is:inline>
+  (() => {
+    const storageKey = 'navfolio-theme';
+    const defaultTheme = 'light';
+
+    const syncTheme = () => {
+      const theme = (() => {
+        try {
+          return localStorage.getItem(storageKey) === 'dark' ? 'dark' : defaultTheme;
+        } catch {
+          return defaultTheme;
+        }
+      })();
+
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme;
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute('content', theme === 'dark' ? '#171b18' : '#fdfdf9');
+    };
+
+    syncTheme();
+    document.addEventListener('astro:page-load', syncTheme);
+  })();
+</script>
