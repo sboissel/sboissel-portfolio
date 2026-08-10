@@ -39,6 +39,7 @@ const normalizeSiteUrl = (value) => {
 };
 
 const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
+const isGitLabCI = process.env.GITLAB_CI === 'true';
 const customSite = process.env.SITE_URL;
 const customBase = process.env.SITE_BASE;
 const repositoryOwner = process.env.GITHUB_REPOSITORY_OWNER;
@@ -53,14 +54,32 @@ const githubPagesSite =
     ? `https://${repositoryOwner}.github.io${isProjectPage ? `/${repositoryName}` : ''}`
     : undefined;
 
+const gitlabProjectName = process.env.CI_PROJECT_NAME;
+const gitlabRootNamespace = process.env.CI_PROJECT_ROOT_NAMESPACE;
+const isGitLabProjectPage =
+  isGitLabCI &&
+  Boolean(gitlabProjectName) &&
+  Boolean(gitlabRootNamespace) &&
+  gitlabProjectName !== `${gitlabRootNamespace}.gitlab.io`;
+
+const gitlabPagesSite =
+  isGitLabCI && gitlabProjectName && gitlabRootNamespace
+    ? normalizeSiteUrl(process.env.CI_PAGES_URL) ||
+      `https://${gitlabRootNamespace}.gitlab.io${isGitLabProjectPage ? `/${gitlabProjectName}` : ''}`
+    : undefined;
+
 const resolvedSite =
   normalizeSiteUrl(customSite) ||
   (isGitHubActions && githubPagesSite ? githubPagesSite : undefined) ||
+  (isGitLabCI && gitlabPagesSite ? gitlabPagesSite : undefined) ||
   normalizeSiteUrl(configuredSiteUrl) ||
   'https://example.com';
 
 const resolvedBase =
-  customBase || (isGitHubActions && isProjectPage && repositoryName ? `/${repositoryName}` : '/');
+  customBase ||
+  (isGitHubActions && isProjectPage && repositoryName ? `/${repositoryName}` : undefined) ||
+  (isGitLabCI && isGitLabProjectPage && gitlabProjectName ? `/${gitlabProjectName}/` : undefined) ||
+  '/';
 
 // https://astro.build/config
 export default defineConfig({

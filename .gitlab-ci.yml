@@ -1,0 +1,38 @@
+image: node:22-bookworm
+
+variables:
+  HUSKY: '0'
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - .bun/
+
+pages:
+  stage: deploy
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq python3 python3-pip python3-venv curl git ca-certificates
+    - python3 -m venv .venv
+    - .venv/bin/pip install -q fonttools brotli
+    - curl -fsSL https://bun.sh/install | bash
+    - export PATH="$HOME/.bun/bin:.venv/bin:$PATH"
+  script:
+    - bun install --frozen-lockfile
+    - |
+      if [ "$CI_PROJECT_NAME" = "${CI_PROJECT_ROOT_NAMESPACE}.gitlab.io" ]; then
+        export SITE_BASE="/"
+        export SITE_URL="${CI_PAGES_URL:-https://${CI_PROJECT_ROOT_NAMESPACE}.gitlab.io}"
+      else
+        export SITE_BASE="/${CI_PROJECT_NAME}/"
+        export SITE_URL="${CI_PAGES_URL:-https://${CI_PROJECT_ROOT_NAMESPACE}.gitlab.io/${CI_PROJECT_NAME}}"
+      fi
+    - bun run build
+    - rm -rf public-pages
+    - cp -r dist public-pages
+    - mv public-pages public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
