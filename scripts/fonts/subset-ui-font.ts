@@ -97,7 +97,7 @@ const cjkPattern =
 
 function readFontConfig(): FontConfig {
   const defaults: FontConfig = {
-    en: 'Maple Mono',
+    en: 'IBM Plex Mono',
     zh: 'ChillRoundM',
     file: '/fonts/ChillRoundM.ttf',
   };

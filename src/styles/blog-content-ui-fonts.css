@@ -1,0 +1,25 @@
+/* Match homepage IBM Plex Mono typography on site pages using UI content mode. */
+.blog-detail-page.blog-content-ui .article-content,
+.blog-detail-page.blog-content-ui .article-content-ui {
+  font-family: var(--font-body);
+}
+
+.blog-detail-page.blog-content-ui .article-content-ui :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-body);
+}
+
+.blog-detail-page.blog-content-ui .article-content blockquote {
+  font-family: var(--font-note);
+}
+
+.blog-detail-page.blog-content-ui .article-header h1 {
+  font-family: var(--font-body);
+}
+
+.blog-detail-page.blog-content-ui .group-link {
+  font-family: var(--font-body);
+}
+
+.blog-detail-page.blog-content-ui .toc-card[data-font='ui'] .toc-tree a {
+  font-family: var(--font-body);
+}

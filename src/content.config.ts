@@ -97,7 +97,7 @@ const defaultMathConfig = {
 };
 
 const defaultFontConfig = {
-  en: 'Maple Mono',
+  en: 'IBM Plex Mono',
   code: 'Monaco',
   zh: 'ChillRoundM',
   file: '/fonts/ChillRoundM.ttf',

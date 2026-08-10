@@ -12,7 +12,7 @@ palette = "blue-soft"
 lang = "en"
 
 [config.fonts]
-en = "Maple Mono"
+en = "IBM Plex Mono"
 code = "Monaco"
 zh = "ChillRoundM"
 file = "/fonts/ChillRoundM.ttf"
