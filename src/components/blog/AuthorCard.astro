@@ -1,5 +1,5 @@
 ---
-import { Github, Mail, Rss } from 'lucide-astro';
+import { Gitlab, Mail, Rss } from 'lucide-astro';
 import { getSiteConfig } from '../../data/site';
 
 const { profile } = await getSiteConfig();
@@ -12,8 +12,8 @@ const { profile } = await getSiteConfig();
   <span>{profile.role}</span>
 
   <div class="social-links" aria-label="Author links">
-    <a href={profile.github} aria-label="GitHub">
-      <Github size={16} />
+    <a href={profile.github} aria-label="GitLab">
+      <Gitlab size={16} />
     </a>
     <a href={`mailto:${profile.email}`} aria-label="Email">
       <Mail size={16} />

@@ -120,6 +120,8 @@ export function getRouteLabels(): Record<string, string> {
     routeLabels[module.route] = module.id;
   }
 
+  routeLabels['/portfolio'] = 'portfolio';
+
   return routeLabels;
 }
 

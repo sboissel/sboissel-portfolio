@@ -1,0 +1,21 @@
+---
+import { getCollection, render } from 'astro:content';
+import BlogArticle from '../layouts/BlogArticle.astro';
+
+const [contact] = await getCollection('contact');
+
+if (!contact) {
+  throw new Error('Missing src/content/contact.mdx content entry.');
+}
+
+const { Content, headings } = await render(contact);
+---
+
+<BlogArticle
+  post={contact}
+  headings={headings}
+  sidebar={{ enable: false, ...contact.data.sidebar }}
+  contentFont="ui"
+>
+  <Content />
+</BlogArticle>

@@ -419,7 +419,19 @@ const siteConfig = defineCollection({
       intro: z.object({
         title: z.string(),
         name: z.string(),
+        focus: z.string().optional(),
         body: z.array(z.string()).min(1),
+        highlightsHeading: z.string().optional().default(''),
+        highlights: z
+          .array(
+            z.object({
+              title: z.string(),
+              tagline: z.string().optional().default(''),
+              description: z.string(),
+            }),
+          )
+          .optional()
+          .default([]),
       }),
       latest: z
         .object({
@@ -441,12 +453,15 @@ const siteConfig = defineCollection({
         }),
       navigation: z.array(navigationItemSchema),
       links: z.array(homeLinkSchema).optional().default([]),
-      doing: z.array(
-        z.object({
-          text: z.string(),
-          mark: z.string(),
-        }),
-      ),
+      doing: z
+        .array(
+          z.object({
+            text: z.string(),
+            mark: z.string(),
+          }),
+        )
+        .optional()
+        .default([]),
     }),
   }),
 });
@@ -460,6 +475,70 @@ const blog = defineCollection({
 const about = defineCollection({
   loader: glob({ base: contentBase, pattern: 'about.{md,mdx}' }),
   schema: articleSchema,
+});
+
+const resume = defineCollection({
+  loader: glob({ base: contentBase, pattern: 'resume.{md,mdx}' }),
+  schema: articleSchema,
+});
+
+const portfolio = defineCollection({
+  loader: glob({ base: contentBase, pattern: 'portfolio.{md,mdx}' }),
+  schema: articleSchema,
+});
+
+const contact = defineCollection({
+  loader: glob({ base: contentBase, pattern: 'contact.{md,mdx}' }),
+  schema: articleSchema,
+});
+
+const portfolioProjectSchema = (context: Parameters<CollectionSchemaFactory>[0]) =>
+  articleSchema(context).extend({
+    portfolioType: z.enum(['personal', 'sample']),
+    motivation: z.string().optional(),
+    tools: z.array(z.string()).optional().default([]),
+    icon: z
+      .enum([
+        'github',
+        'box',
+        'code-2',
+        'database',
+        'file-code-2',
+        'globe-2',
+        'layers-3',
+        'palette',
+        'rocket',
+        'sparkles',
+        'terminal',
+        'wand-sparkles',
+      ])
+      .optional()
+      .default('layers-3'),
+    iconColor: z
+      .string()
+      .regex(
+        /^(#[0-9a-f]{3,8}|var\(--[a-z0-9-]+\)|[a-z]+)$/i,
+        'Use a CSS color, hex color, or CSS variable.',
+      )
+      .optional(),
+    links: z
+      .array(
+        z.object({
+          label: z.string(),
+          href: z.url(),
+          kind: z
+            .enum(['github', 'website', 'platform', 'docs', 'demo'])
+            .optional()
+            .default('website'),
+        }),
+      )
+      .optional()
+      .default([]),
+  });
+
+const portfolioItems = defineCollection({
+  loader: glob({ base: `${contentBase}/portfolio-items`, pattern: '**/*.{md,mdx}' }),
+  schema: portfolioProjectSchema,
 });
 
 const projects = defineCollection({
@@ -555,6 +634,10 @@ const media = defineCollection({
 
 export const collections = {
   about,
+  resume,
+  portfolio,
+  portfolioItems,
+  contact,
   blog,
   siteConfig,
   ...(projectsModuleEnabled ? { projects } : {}),

@@ -29,7 +29,9 @@ const pageMeta = pages.projects;
 const projectEntries = await getCollection('projects');
 const projectIndex = projectEntries.find((entry) => entry.id === 'index');
 const projects = sortBlogPostsForArchive(
-  projectEntries.filter((entry) => entry.id !== 'index' && !entry.data.draft),
+  projectEntries.filter(
+    (entry) => entry.id !== 'index' && !entry.data.draft && !entry.data.tags.includes('streamlit'),
+  ),
 );
 
 if (!projectIndex) {

@@ -1,0 +1,140 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from '../Icon.astro';
+import { sortBlogPostsForArchive } from '../../utils/content-dates';
+
+interface Props {
+  count?: number;
+}
+
+const { count = 3 } = Astro.props;
+
+const featured = sortBlogPostsForArchive(
+  (await getCollection('portfolioItems')).filter(
+    (entry) => !entry.data.draft && entry.data.portfolioType === 'personal',
+  ),
+).slice(0, count);
+
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+function withBase(href: string) {
+  return `${basePath}${href.startsWith('/') ? href : `/${href}`}`;
+}
+---
+
+<article class="glass-card featured-card">
+  <div class="featured-header">
+    <h2><Icon name="layers" /> Featured Projects</h2>
+    <a class="featured-link" href={withBase('/portfolio')}>View all</a>
+  </div>
+
+  {
+    featured.length > 0 ? (
+      <ul class="featured-list">
+        {featured.map((project) => (
+          <li>
+            <a href={withBase(`/portfolio/${project.id}/`)}>
+              <span class="featured-title">{project.data.title}</span>
+              <span class="featured-desc">{project.data.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="featured-empty">Projects will appear here once added.</p>
+    )
+  }
+</article>
+
+<style>
+  .featured-card {
+    padding: 18px 0;
+  }
+
+  .featured-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .featured-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    color: var(--paper-ink);
+    font-size: 1.06rem;
+  }
+
+  .featured-header h2 svg {
+    width: 21px;
+    height: 21px;
+    color: var(--paper-accent);
+  }
+
+  .featured-link {
+    color: var(--paper-ink-faint);
+    font-family: var(--font-ui-label);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .featured-link:hover {
+    color: var(--paper-accent);
+  }
+
+  .featured-list {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .featured-list li {
+    border-top: 1px solid var(--paper-line);
+  }
+
+  .featured-list a {
+    display: grid;
+    gap: 4px;
+    padding: 12px 0;
+    color: inherit;
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .featured-list a:hover .featured-title {
+    color: var(--paper-accent);
+  }
+
+  .featured-title {
+    color: var(--paper-ink);
+    font-family: var(--font-ui-label);
+    font-size: 0.92rem;
+    line-height: 1.4;
+    transition: color 180ms ease;
+  }
+
+  .featured-desc {
+    color: var(--paper-ink-soft);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .featured-empty {
+    margin: 0;
+    color: var(--paper-ink-soft);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+</style>

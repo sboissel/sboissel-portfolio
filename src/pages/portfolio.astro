@@ -1,0 +1,99 @@
+---
+import { getCollection, render } from 'astro:content';
+import PortfolioProjectGrid from '../components/portfolio/PortfolioProjectGrid.astro';
+import PortfolioToolFilter from '../components/portfolio/PortfolioToolFilter.astro';
+import BlogArticle from '../layouts/BlogArticle.astro';
+import { getSiteConfig } from '../data/site';
+import { sortBlogPostsForArchive } from '../utils/content-dates';
+
+const { pages } = await getSiteConfig();
+const pageMeta = pages.projects;
+const [portfolio] = await getCollection('portfolio');
+
+if (!portfolio) {
+  throw new Error('Missing src/content/portfolio.mdx content entry.');
+}
+
+const allItems = sortBlogPostsForArchive(
+  (await getCollection('portfolioItems')).filter((entry) => !entry.data.draft),
+);
+const personalProjects = allItems.filter((entry) => entry.data.portfolioType === 'personal');
+
+const allTools = [
+  ...new Set(
+    personalProjects.flatMap((entry) => entry.data.tools.map((tool) => tool.toLowerCase())),
+  ),
+].sort();
+
+const { Content, headings } = await render(portfolio);
+const portfolioPage = {
+  ...portfolio,
+  data: {
+    ...portfolio.data,
+    title: pageMeta.title,
+    description: pageMeta.subtitle,
+  },
+};
+---
+
+<BlogArticle
+  post={portfolioPage}
+  headings={headings}
+  sidebar={{ enable: false, ...portfolio.data.sidebar }}
+  headerVariant="archive"
+  headerKicker={pageMeta.kicker}
+  headerNote={pageMeta.note}
+  contentFont="ui"
+>
+  <Content />
+
+  {allTools.length > 0 && <PortfolioToolFilter tools={allTools} />}
+
+  <section
+    class="portfolio-section"
+    data-portfolio-section
+    aria-labelledby="personal-projects-heading"
+  >
+    <h2 id="personal-projects-heading">Personal Projects</h2>
+    <p class="portfolio-section-note">
+      Original work — click a project for motivation, details, and links.
+    </p>
+    <PortfolioProjectGrid projects={personalProjects} />
+  </section>
+
+  <section
+    class="portfolio-section"
+    data-portfolio-section
+    aria-labelledby="sample-projects-heading"
+  >
+    <h2 id="sample-projects-heading">Sample Projects</h2>
+    <p class="portfolio-section-note portfolio-more-note">More to come.</p>
+  </section>
+</BlogArticle>
+
+<style>
+  .portfolio-section {
+    margin-top: 42px;
+  }
+
+  .portfolio-section h2 {
+    margin: 0;
+    color: var(--paper-ink);
+    font-family: var(--font-ui-label);
+    font-size: 1.45rem;
+    line-height: 1.3;
+  }
+
+  .portfolio-section-note {
+    margin: 8px 0 0;
+    max-width: 58ch;
+    color: var(--paper-ink-soft);
+    font-size: 0.96rem;
+    line-height: 1.7;
+  }
+
+  .portfolio-more-note {
+    margin-top: 12px;
+    font-style: italic;
+  }
+</style>

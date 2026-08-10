@@ -32,7 +32,7 @@ function withBase(href: string) {
           <span class="nav-icon">
             <Icon name={item.icon} />
           </span>
-          <span>
+          <span class="nav-copy">
             <strong>{item.title}</strong>
             <small>{item.subtitle}</small>
           </span>
@@ -62,7 +62,7 @@ function withBase(href: string) {
     display: grid;
     grid-template-columns: 28px minmax(0, 1fr) 18px;
     gap: 12px;
-    align-items: center;
+    align-items: start;
     padding: 8px 0;
     border-radius: 0;
     background: transparent;
@@ -81,6 +81,18 @@ function withBase(href: string) {
     color: var(--paper-accent);
   }
 
+  .nav-icon {
+    margin-top: 2px;
+  }
+
+  .nav-item > svg {
+    margin-top: 4px;
+  }
+
+  .nav-copy {
+    min-width: 0;
+  }
+
   .nav-icon svg,
   .nav-item > svg {
     width: 20px;
@@ -90,20 +102,19 @@ function withBase(href: string) {
   strong,
   small {
     display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   strong {
     font-size: 0.96rem;
     font-weight: 650;
+    line-height: 1.35;
   }
 
   small {
     margin-top: 2px;
     color: var(--paper-ink-soft);
     font-size: 0.82rem;
+    line-height: 1.45;
   }
 
   @media (max-width: 820px) {

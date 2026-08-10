@@ -1,0 +1,173 @@
+---
+interface Props {
+  tools: string[];
+}
+
+const { tools } = Astro.props;
+
+function formatToolLabel(tool: string) {
+  return tool
+    .split(/[-_\s]+/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+---
+
+<div class="portfolio-filter" data-portfolio-filter>
+  <p class="portfolio-filter-label">Filter by tool</p>
+  <div class="portfolio-filter-list" role="group" aria-label="Filter projects by tool">
+    <button
+      type="button"
+      class="portfolio-filter-chip is-active"
+      data-tool="all"
+      aria-pressed="true"
+    >
+      All
+    </button>
+    {
+      tools.map((tool) => (
+        <button type="button" class="portfolio-filter-chip" data-tool={tool} aria-pressed="false">
+          {formatToolLabel(tool)}
+        </button>
+      ))
+    }
+  </div>
+  <p class="portfolio-filter-empty" hidden>No projects use this tool yet.</p>
+</div>
+
+<script is:inline>
+  (function () {
+    var FILTER_KEY = '__portfolioToolFilterReady';
+
+    function applyPortfolioFilter(tool) {
+      var cards = document.querySelectorAll('[data-project-tools]');
+      var sections = document.querySelectorAll('[data-portfolio-section]');
+      var emptyNote = document.querySelector('[data-portfolio-filter] .portfolio-filter-empty');
+      var visibleCount = 0;
+
+      cards.forEach(function (card) {
+        var cardTools = (card.getAttribute('data-project-tools') || '')
+          .split(/\s+/)
+          .filter(Boolean);
+        var visible = tool === 'all' || cardTools.indexOf(tool) !== -1;
+        card.toggleAttribute('hidden', !visible);
+        if (visible) visibleCount += 1;
+      });
+
+      sections.forEach(function (section) {
+        var sectionCards = section.querySelectorAll('[data-project-tools]');
+        if (sectionCards.length === 0) {
+          section.removeAttribute('hidden');
+          return;
+        }
+        var sectionVisible = Array.from(sectionCards).some(function (card) {
+          return !card.hasAttribute('hidden');
+        });
+        section.toggleAttribute('hidden', !sectionVisible);
+      });
+
+      if (emptyNote) {
+        emptyNote.hidden = visibleCount > 0;
+      }
+    }
+
+    function setActiveChip(tool) {
+      var chips = document.querySelectorAll('[data-portfolio-filter] [data-tool]');
+      chips.forEach(function (chip) {
+        var isActive = chip.getAttribute('data-tool') === tool;
+        chip.classList.toggle('is-active', isActive);
+        chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+    }
+
+    function getActiveTool() {
+      var activeChip = document.querySelector('[data-portfolio-filter] [data-tool].is-active');
+      return activeChip ? activeChip.getAttribute('data-tool') || 'all' : 'all';
+    }
+
+    function initPortfolioToolFilter() {
+      applyPortfolioFilter(getActiveTool());
+    }
+
+    if (!window[FILTER_KEY]) {
+      window[FILTER_KEY] = true;
+
+      document.addEventListener('click', function (event) {
+        var chip = event.target.closest('[data-portfolio-filter] [data-tool]');
+        if (!chip) return;
+
+        var tool = chip.getAttribute('data-tool') || 'all';
+        setActiveChip(tool);
+        applyPortfolioFilter(tool);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPortfolioToolFilter, { once: true });
+    } else {
+      initPortfolioToolFilter();
+    }
+
+    document.addEventListener('astro:page-load', initPortfolioToolFilter);
+  })();
+</script>
+
+<style>
+  .portfolio-filter {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--paper-line);
+  }
+
+  .portfolio-filter-label {
+    margin: 0 0 12px;
+    color: var(--paper-ink-faint);
+    font-family: var(--font-ui-label);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .portfolio-filter-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .portfolio-filter-chip {
+    padding: 7px 12px;
+    border: 1px solid var(--paper-line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--paper-ink-soft);
+    font-family: var(--font-ui-label);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition:
+      background 180ms ease,
+      color 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .portfolio-filter-chip:hover,
+  .portfolio-filter-chip.is-active {
+    border-color: var(--paper-accent);
+    background: var(--paper-control-hover);
+    color: var(--paper-accent);
+  }
+
+  .portfolio-filter-empty {
+    margin: 12px 0 0;
+    color: var(--paper-ink-soft);
+    font-size: 0.9rem;
+  }
+
+  :global([data-project-tools][hidden]) {
+    display: none !important;
+  }
+
+  :global([data-portfolio-section][hidden]) {
+    display: none !important;
+  }
+</style>

@@ -1,0 +1,211 @@
+---
+interface Props {
+  shareUrl: string;
+  vizId?: string;
+  path?: string;
+  staticImage?: string;
+  title?: string;
+  width?: number;
+  height?: number;
+}
+
+const {
+  shareUrl,
+  vizId = 'viz1786103867550',
+  path = 'shared/84T3N2JB8',
+  staticImage = 'https://public.tableau.com/static/images/84/84T3N2JB8/1.png',
+  title = "Runner's Dashboard",
+  width = 1016,
+  height = 991,
+} = Astro.props;
+
+const pathParam = path.replace(/\//g, '&#47;');
+const staticImageParam = staticImage.replace(/:/g, '&#58;').replace(/\//g, '&#47;');
+---
+
+<div class="tableau-embed" data-tableau-embed>
+  <a class="tableau-embed__preview" href={shareUrl} target="_blank" rel="noopener noreferrer">
+    <img src={staticImage} alt={`${title} preview`} width={width} height={height} loading="lazy" />
+    <span class="tableau-embed__preview-cta">Open interactive dashboard on Tableau Public</span>
+  </a>
+
+  <div class="tableau-embed__live" id={`${vizId}-host`} aria-label={title} hidden></div>
+
+  <p class="tableau-embed__note">
+    <a href={shareUrl} target="_blank" rel="noopener noreferrer">View on Tableau Public</a>
+    for the full interactive experience if the embed does not load here.
+  </p>
+</div>
+
+<script
+  is:inline
+  define:vars={{
+    vizId,
+    pathParam,
+    staticImage,
+    staticImageParam,
+    title,
+    width,
+    height,
+    shareUrl,
+  }}
+>
+  (function () {
+    var hostId = vizId + '-host';
+    var initializedKey = '__tableauInit_' + vizId;
+
+    function hasLoadedViz(container) {
+      var iframe = container.querySelector('.tableau-embed__live iframe');
+      return Boolean(iframe && iframe.offsetHeight > 80);
+    }
+
+    function showLiveEmbed(container) {
+      container.classList.add('is-embed-ready');
+      var live = container.querySelector('.tableau-embed__live');
+      if (live) live.hidden = false;
+    }
+
+    function showPreviewOnly(container) {
+      container.classList.add('is-embed-failed');
+      var live = container.querySelector('.tableau-embed__live');
+      if (live) live.hidden = true;
+    }
+
+    function mountTableau() {
+      if (window[initializedKey]) return;
+
+      var host = document.getElementById(hostId);
+      var container = host && host.closest('[data-tableau-embed]');
+      if (!host || !container || host.dataset.tableauMounted === 'true') return;
+
+      host.dataset.tableauMounted = 'true';
+      window[initializedKey] = true;
+
+      host.innerHTML =
+        "<div class='tableauPlaceholder' id='" +
+        vizId +
+        "' style='position: relative'><object class='tableauViz' style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /><param name='embed_code_version' value='3' /><param name='path' value='" +
+        pathParam +
+        "' /><param name='toolbar' value='yes' /><param name='static_image' value='" +
+        staticImageParam +
+        "' /><param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /></object></div>";
+
+      var divElement = document.getElementById(vizId);
+      if (!divElement) {
+        showPreviewOnly(container);
+        return;
+      }
+
+      var vizElement = divElement.getElementsByTagName('object')[0];
+      if (!vizElement) {
+        showPreviewOnly(container);
+        return;
+      }
+
+      var containerWidth = container.clientWidth || width;
+      var aspectRatio = height / width;
+      vizElement.style.width = containerWidth + 'px';
+      vizElement.style.height = Math.round(containerWidth * aspectRatio) + 'px';
+
+      var scriptElement = document.createElement('script');
+      scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+      scriptElement.async = true;
+      scriptElement.onerror = function () {
+        showPreviewOnly(container);
+      };
+      vizElement.parentNode.insertBefore(scriptElement, vizElement);
+
+      var attempts = 0;
+      var poll = window.setInterval(function () {
+        attempts += 1;
+        if (hasLoadedViz(container)) {
+          window.clearInterval(poll);
+          showLiveEmbed(container);
+          return;
+        }
+        if (attempts >= 20) {
+          window.clearInterval(poll);
+          showPreviewOnly(container);
+        }
+      }, 500);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', mountTableau, { once: true });
+    } else {
+      mountTableau();
+    }
+  })();
+</script>
+
+<style>
+  .tableau-embed {
+    width: 100%;
+    margin: 28px 0;
+    overflow: hidden;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-surface);
+    box-shadow: var(--paper-shadow);
+  }
+
+  .tableau-embed__live {
+    width: 100%;
+  }
+
+  .tableau-embed__live :global(.tableauPlaceholder) {
+    width: 100%;
+  }
+
+  .tableau-embed__preview {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .tableau-embed.is-embed-ready .tableau-embed__preview {
+    display: none;
+  }
+
+  .tableau-embed.is-embed-failed .tableau-embed__live {
+    display: none;
+  }
+
+  .tableau-embed__preview img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 0;
+  }
+
+  .tableau-embed__preview-cta {
+    display: block;
+    padding: 14px 16px;
+    border-top: 1px solid var(--paper-line);
+    background: var(--paper-control-hover);
+    color: var(--paper-accent);
+    font-family: var(--font-ui-label);
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .tableau-embed__note {
+    margin: 0;
+    padding: 10px 14px;
+    border-top: 1px solid var(--paper-line);
+    color: var(--paper-ink-soft);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .tableau-embed__note a {
+    color: var(--paper-accent);
+    text-decoration: none;
+  }
+
+  .tableau-embed__note a:hover {
+    text-decoration: underline;
+  }
+</style>

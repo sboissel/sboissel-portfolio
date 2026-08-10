@@ -1,5 +1,5 @@
 ---
-import { Github, ListTree, Menu, Moon, Sun } from 'lucide-astro';
+import { Gitlab, ListTree, Menu, Moon, Sun } from 'lucide-astro';
 import SiteSearch from './SiteSearch.astro';
 import TocTree from './TocTree.astro';
 import { getRouteLabels, getSiteConfig, getTopNavLinks } from '../../data/site';
@@ -72,13 +72,12 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
     <Menu size={18} stroke-width={2} />
   </button>
 
-  <a class="brand" href={withBase('/')} aria-label={`Go to ${site.title} home`}>
-    <span class="brand-mark" aria-hidden="true"></span>
+  <span class="brand">
     <span class="brand-title">
       <span>{site.title}</span>
       {brandRouteLabel && <span class="brand-route"> · {brandRouteLabel}</span>}
     </span>
-  </a>
+  </span>
 
   <nav class="nav-links" aria-label="Article navigation">
     {
@@ -130,10 +129,10 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
       href={site.repository}
       target="_blank"
       rel="noreferrer"
-      aria-label="Open GitHub repository"
-      title="GitHub"
+      aria-label="Open GitLab repository"
+      title="GitLab"
     >
-      <Github size={17} stroke-width={2} />
+      <Gitlab size={17} stroke-width={2} />
     </a>
     <button type="button" data-theme-toggle aria-label="Switch theme">
       <Moon class="theme-icon-moon" size={17} stroke-width={2} />
@@ -465,16 +464,7 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
   .brand {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
     font-weight: 700;
-  }
-
-  .brand-mark {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: var(--paper-accent);
-    box-shadow: none;
   }
 
   .nav-links {
@@ -515,8 +505,7 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
     transform: translateX(-50%);
   }
 
-  .nav-link[data-nav-link-pending]::after,
-  .brand[data-nav-link-pending] .brand-mark {
+  .nav-link[data-nav-link-pending]::after {
     animation: nav-pending-pulse 620ms ease-in-out infinite alternate;
   }
 
@@ -578,7 +567,6 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
 
     .brand {
       min-width: 0;
-      gap: 8px;
       font-size: 0.95rem;
     }
 
@@ -586,10 +574,6 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-
-    .brand-mark {
-      flex: 0 0 auto;
     }
 
     .nav-actions {
@@ -752,8 +736,7 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
       transform: scaleX(1);
     }
 
-    .nav-link[data-nav-link-pending]::after,
-    .brand[data-nav-link-pending] .brand-mark {
+    .nav-link[data-nav-link-pending]::after {
       animation: none;
     }
   }

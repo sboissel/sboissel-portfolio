@@ -1,8 +1,17 @@
 ---
+interface IntroHighlight {
+  title: string;
+  tagline?: string;
+  description: string;
+}
+
 interface Intro {
   title: string;
   name: string;
+  focus?: string;
   body: string[];
+  highlightsHeading?: string;
+  highlights?: IntroHighlight[];
 }
 
 interface Quote {
@@ -10,21 +19,16 @@ interface Quote {
 }
 
 const { intro, quote } = Astro.props as { intro: Intro; quote?: Quote };
+const highlights = intro.highlights ?? [];
 ---
 
 <article class="glass-card intro-card">
   <div class="intro-copy">
-    {
-      quote && (
-        <div class="quote-mark" aria-hidden="true">
-          "
-        </div>
-      )
-    }
     <h2>
       <span aria-hidden="true">Hi,</span>
       {intro.title.replace(intro.name, '')}<em>{intro.name}</em>
     </h2>
+    {intro.focus && <p class="intro-focus">{intro.focus}</p>}
     {
       quote && (
         <blockquote>
@@ -34,6 +38,24 @@ const { intro, quote } = Astro.props as { intro: Intro; quote?: Quote };
       )
     }
     {intro.body.map((paragraph) => <p>{paragraph}</p>)}
+    {
+      highlights.length > 0 && (
+        <section class="intro-highlights" aria-label={intro.highlightsHeading || 'Focus areas'}>
+          {intro.highlightsHeading && <h3>{intro.highlightsHeading}</h3>}
+          <ul>
+            {highlights.map((item) => (
+              <li>
+                <p class="highlight-title">
+                  {item.title}
+                  {item.tagline && <span class="highlight-tagline"> — {item.tagline}</span>}
+                </p>
+                <p class="highlight-description">{item.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
   </div>
 </article>
 
@@ -64,14 +86,6 @@ const { intro, quote } = Astro.props as { intro: Intro; quote?: Quote };
     align-items: flex-start;
   }
 
-  .quote-mark {
-    margin-bottom: 2px;
-    color: rgba(102, 125, 109, 0.32);
-    font-family: var(--font-display);
-    font-size: 3rem;
-    line-height: 0.7;
-  }
-
   h2 {
     margin: 0 0 18px;
     color: var(--paper-ink);
@@ -90,6 +104,17 @@ const { intro, quote } = Astro.props as { intro: Intro; quote?: Quote };
   h2 em {
     color: var(--paper-accent);
     font-style: italic;
+  }
+
+  .intro-focus {
+    margin: 0 0 14px;
+    color: var(--paper-ink);
+    max-width: 66ch;
+    font-family: var(--font-ui-label);
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
   }
 
   blockquote {
@@ -119,7 +144,56 @@ const { intro, quote } = Astro.props as { intro: Intro; quote?: Quote };
     line-height: 1.92;
   }
 
-  p:last-child {
+  .intro-highlights {
+    width: 100%;
+    max-width: 66ch;
+    margin-top: 18px;
+  }
+
+  .intro-highlights h3 {
+    margin: 0 0 14px;
+    color: var(--paper-ink);
+    font-family: var(--font-ui-label);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .intro-highlights ul {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .intro-highlights li {
+    padding-top: 16px;
+    border-top: 1px solid var(--paper-line);
+  }
+
+  .highlight-title {
+    margin: 0 0 6px;
+    color: var(--paper-ink);
+    font-family: var(--font-ui-label);
+    font-size: 0.96rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .highlight-tagline {
+    color: var(--paper-ink-soft);
+    font-weight: 500;
+  }
+
+  .highlight-description {
+    margin: 0;
+    color: var(--paper-ink-soft);
+    font-size: 0.96rem;
+    line-height: 1.75;
+  }
+
+  .intro-highlights li:last-child .highlight-description {
     margin-bottom: 0;
   }
 

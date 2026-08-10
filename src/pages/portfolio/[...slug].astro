@@ -1,0 +1,106 @@
+---
+import { getCollection, render } from 'astro:content';
+import { ExternalLink, Github } from 'lucide-astro';
+import BlogArticle from '../../layouts/BlogArticle.astro';
+
+export async function getStaticPaths() {
+  const items = await getCollection('portfolioItems', ({ data }) => !data.draft);
+
+  return items.map((project) => ({
+    params: { slug: project.id },
+    props: project,
+  }));
+}
+
+const project = Astro.props;
+const { Content, headings } = await render(project);
+const isPersonal = project.data.portfolioType === 'personal';
+---
+
+<BlogArticle
+  post={project}
+  headings={headings}
+  sidebar={{ enable: true, toc: true, ...project.data.sidebar }}
+  contentFont="ui"
+>
+  {
+    isPersonal && project.data.motivation && (
+      <section class="project-motivation" aria-labelledby="motivation-heading">
+        <h2 id="motivation-heading">Motivation</h2>
+        <p>{project.data.motivation}</p>
+      </section>
+    )
+  }
+
+  <Content />
+
+  {
+    project.data.links.length > 0 && (
+      <section class="project-links" aria-label="Project links">
+        {project.data.links.map((link) => (
+          <a href={link.href} target="_blank" rel="noopener noreferrer">
+            {link.kind === 'github' ? (
+              <Github size={14} strokeWidth={1.8} aria-hidden="true" />
+            ) : (
+              <ExternalLink size={14} strokeWidth={1.8} aria-hidden="true" />
+            )}
+            {link.label}
+          </a>
+        ))}
+      </section>
+    )
+  }
+</BlogArticle>
+
+<style>
+  .project-motivation {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--paper-line);
+  }
+
+  .project-motivation h2 {
+    margin: 0 0 10px;
+    color: var(--paper-ink);
+    font-family: var(--font-ui-label);
+    font-size: 1.2rem;
+  }
+
+  .project-motivation p {
+    margin: 0;
+    max-width: 66ch;
+    color: var(--paper-ink-soft);
+    font-size: 1.02rem;
+    line-height: 1.85;
+  }
+
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--paper-line);
+  }
+
+  .project-links a {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    padding: 8px 12px;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    color: var(--paper-ink);
+    font-family: var(--font-ui-label);
+    font-size: 0.84rem;
+    text-decoration: none;
+    transition:
+      background 180ms ease,
+      color 180ms ease;
+  }
+
+  .project-links a:hover {
+    background: var(--paper-control-hover);
+    color: var(--paper-accent);
+  }
+</style>
