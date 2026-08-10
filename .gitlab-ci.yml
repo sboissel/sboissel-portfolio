@@ -28,9 +28,9 @@ pages:
         export SITE_URL="${CI_PAGES_URL:-https://${CI_PROJECT_ROOT_NAMESPACE}.gitlab.io/${CI_PROJECT_NAME}}"
       fi
     - bun run build
-    - rm -rf public-pages
-    - cp -r dist public-pages
-    - mv public-pages public
+    - test -f dist/index.html
+    - rm -rf public
+    - cp -r dist public
   artifacts:
     paths:
       - public
