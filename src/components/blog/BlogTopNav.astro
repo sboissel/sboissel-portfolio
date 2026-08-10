@@ -91,7 +91,11 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
             {link.label}
           </span>
         ) : (
-          <a class:list={['nav-link', { active: isActive(link.href) }]} href={withBase(link.href)}>
+          <a
+            class:list={['nav-link', { active: isActive(link.href) }]}
+            href={withBase(link.href)}
+            data-astro-reload
+          >
             {link.label}
           </a>
         ),
@@ -116,6 +120,7 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
             class:list={['mobile-menu-link', { active: isActive(link.href) }]}
             href={withBase(link.href)}
             data-mobile-menu-link
+            data-astro-reload
           >
             {link.label}
           </a>
@@ -380,6 +385,7 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
     };
   });
   document.addEventListener('astro:after-swap', () => clearPendingNavigation());
+  document.addEventListener('astro:navigation-error', () => clearPendingNavigation());
   document.addEventListener('astro:page-load', initMobileTopNav);
 </script>
 
