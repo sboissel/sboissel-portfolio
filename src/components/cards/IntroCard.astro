@@ -26,7 +26,7 @@ const highlights = intro.highlights ?? [];
   <div class="intro-copy">
     <h2>
       <span aria-hidden="true">Hi,</span>
-      {intro.title.replace(intro.name, '')}<em>{intro.name}</em>
+      {intro.title.replace(intro.name, '')}<span>{intro.name}</span>
     </h2>
     {intro.focus && <p class="intro-focus">{intro.focus}</p>}
     {
@@ -101,9 +101,8 @@ const highlights = intro.highlights ?? [];
     font-style: normal;
   }
 
-  h2 em {
-    color: var(--paper-accent);
-    font-style: italic;
+  h2 span:last-child {
+    margin-right: 0;
   }
 
   .intro-focus {
