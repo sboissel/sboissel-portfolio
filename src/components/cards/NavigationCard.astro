@@ -28,7 +28,7 @@ function withBase(href: string) {
   <nav aria-label="identity websites">
     {
       items.map((item) => (
-        <a class="nav-item" href={withBase(item.href)} data-astro-reload>
+        <a class="nav-item" href={withBase(item.href)}>
           <span class="nav-icon">
             <Icon name={item.icon} />
           </span>

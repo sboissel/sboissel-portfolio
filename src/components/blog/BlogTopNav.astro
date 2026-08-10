@@ -91,11 +91,7 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
             {link.label}
           </span>
         ) : (
-          <a
-            class:list={['nav-link', { active: isActive(link.href) }]}
-            href={withBase(link.href)}
-            data-astro-reload
-          >
+          <a class:list={['nav-link', { active: isActive(link.href) }]} href={withBase(link.href)}>
             {link.label}
           </a>
         ),
@@ -120,7 +116,6 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
             class:list={['mobile-menu-link', { active: isActive(link.href) }]}
             href={withBase(link.href)}
             data-mobile-menu-link
-            data-astro-reload
           >
             {link.label}
           </a>
@@ -179,49 +174,6 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
 </header>
 
 <script>
-  let navigationSequence = 0;
-  let activeNavigationId = 0;
-
-  const clearPendingNavigation = (navigationId?: number) => {
-    if (navigationId && navigationId !== activeNavigationId) {
-      return;
-    }
-
-    for (const header of document.querySelectorAll<HTMLElement>('.blog-top-nav')) {
-      delete header.dataset.navPending;
-      header.removeAttribute('aria-busy');
-
-      for (const link of header.querySelectorAll<HTMLElement>('[data-nav-link-pending]')) {
-        delete link.dataset.navLinkPending;
-      }
-    }
-
-    activeNavigationId = 0;
-  };
-
-  const startPendingNavigation = (sourceElement?: Element) => {
-    const sourceLink = sourceElement?.closest<HTMLAnchorElement>('.blog-top-nav a[href]');
-
-    if (!sourceLink) {
-      return 0;
-    }
-
-    const navigationId = ++navigationSequence;
-    const pendingHref = sourceLink.href;
-    activeNavigationId = navigationId;
-
-    for (const header of document.querySelectorAll<HTMLElement>('.blog-top-nav')) {
-      header.dataset.navPending = 'true';
-      header.setAttribute('aria-busy', 'true');
-
-      for (const link of header.querySelectorAll<HTMLAnchorElement>('a[href]')) {
-        link.toggleAttribute('data-nav-link-pending', link.href === pendingHref);
-      }
-    }
-
-    return navigationId;
-  };
-
   const initMobileTopNav = () => {
     for (const header of document.querySelectorAll<HTMLElement>('.blog-top-nav')) {
       const toggle = header.querySelector<HTMLButtonElement>('[data-mobile-menu-toggle]');
@@ -362,31 +314,6 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
   };
 
   initMobileTopNav();
-  document.addEventListener('astro:before-preparation', (event) => {
-    const navigationId = startPendingNavigation(event.sourceElement);
-
-    if (!navigationId) {
-      return;
-    }
-
-    const loadPage = event.loader;
-
-    event.loader = async () => {
-      try {
-        await loadPage();
-
-        if (event.signal.aborted) {
-          clearPendingNavigation(navigationId);
-        }
-      } catch (error) {
-        clearPendingNavigation(navigationId);
-        throw error;
-      }
-    };
-  });
-  document.addEventListener('astro:after-swap', () => clearPendingNavigation());
-  document.addEventListener('astro:navigation-error', () => clearPendingNavigation());
-  document.addEventListener('astro:page-load', initMobileTopNav);
 </script>
 
 <style>
