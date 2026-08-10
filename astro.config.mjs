@@ -38,6 +38,22 @@ const normalizeSiteUrl = (value) => {
   return /^[a-z][a-z\d+.-]*:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
 };
 
+/**
+ * @param {string | undefined} url
+ */
+const baseFromPagesUrl = (url) => {
+  const normalized = normalizeSiteUrl(url);
+  if (!normalized) return undefined;
+
+  try {
+    const { pathname } = new URL(normalized);
+    if (!pathname || pathname === '/') return '/';
+    return pathname.endsWith('/') ? pathname : `${pathname}/`;
+  } catch {
+    return undefined;
+  }
+};
+
 const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
 const isGitLabCI = process.env.GITLAB_CI === 'true';
 const customSite = process.env.SITE_URL;
@@ -77,7 +93,8 @@ const resolvedSite =
 
 const resolvedBase =
   customBase ||
-  (isGitHubActions && isProjectPage && repositoryName ? `/${repositoryName}` : undefined) ||
+  (isGitHubActions && isProjectPage && repositoryName ? `/${repositoryName}/` : undefined) ||
+  (isGitLabCI ? baseFromPagesUrl(process.env.CI_PAGES_URL) : undefined) ||
   (isGitLabCI && isGitLabProjectPage && gitlabProjectName ? `/${gitlabProjectName}/` : undefined) ||
   '/';
 
