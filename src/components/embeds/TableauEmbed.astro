@@ -1,193 +1,63 @@
 ---
 interface Props {
+  embedUrl: string;
   shareUrl: string;
-  vizId?: string;
-  path?: string;
-  staticImage?: string;
   title?: string;
   width?: number;
   height?: number;
 }
 
 const {
+  embedUrl,
   shareUrl,
-  vizId = 'viz1786103867550',
-  path = 'shared/84T3N2JB8',
-  staticImage = 'https://public.tableau.com/static/images/84/84T3N2JB8/1.png',
   title = "Runner's Dashboard",
   width = 1016,
-  height = 991,
+  height = 900,
 } = Astro.props;
-
-const pathParam = path.replace(/\//g, '&#47;');
-const staticImageParam = staticImage.replace(/:/g, '&#58;').replace(/\//g, '&#47;');
 ---
 
-<div class="tableau-embed" data-tableau-embed>
-  <a class="tableau-embed__preview" href={shareUrl} target="_blank" rel="noopener noreferrer">
-    <img src={staticImage} alt={`${title} preview`} width={width} height={height} loading="lazy" />
-    <span class="tableau-embed__preview-cta">Open interactive dashboard on Tableau Public</span>
-  </a>
-
-  <div class="tableau-embed__live" id={`${vizId}-host`} aria-label={title} hidden></div>
+<div class="tableau-embed" data-native-width={width} data-native-height={height}>
+  <div class="tableau-embed__viewport">
+    <iframe
+      src={embedUrl}
+      title={title}
+      width={width}
+      height={height}
+      allowfullscreen
+      loading="lazy"
+      scrolling="no"
+      tabindex="-1"></iframe>
+  </div>
 
   <p class="tableau-embed__note">
-    <a href={shareUrl} target="_blank" rel="noopener noreferrer">View on Tableau Public</a>
+    <a href={shareUrl} target="_blank" rel="noopener noreferrer">View on Tableau Public</a>{' '}
     for the full interactive experience if the embed does not load here.
   </p>
 </div>
 
-<script
-  is:inline
-  define:vars={{
-    vizId,
-    pathParam,
-    staticImage,
-    staticImageParam,
-    title,
-    width,
-    height,
-    shareUrl,
-  }}
->
-  (function () {
-    var hostId = vizId + '-host';
-    var initializedKey = '__tableauInit_' + vizId;
-
-    function hasLoadedViz(container) {
-      var iframe = container.querySelector('.tableau-embed__live iframe');
-      return Boolean(iframe && iframe.offsetHeight > 80);
-    }
-
-    function showLiveEmbed(container) {
-      container.classList.add('is-embed-ready');
-      var live = container.querySelector('.tableau-embed__live');
-      if (live) live.hidden = false;
-    }
-
-    function showPreviewOnly(container) {
-      container.classList.add('is-embed-failed');
-      var live = container.querySelector('.tableau-embed__live');
-      if (live) live.hidden = true;
-    }
-
-    function mountTableau() {
-      if (window[initializedKey]) return;
-
-      var host = document.getElementById(hostId);
-      var container = host && host.closest('[data-tableau-embed]');
-      if (!host || !container || host.dataset.tableauMounted === 'true') return;
-
-      host.dataset.tableauMounted = 'true';
-      window[initializedKey] = true;
-
-      host.innerHTML =
-        "<div class='tableauPlaceholder' id='" +
-        vizId +
-        "' style='position: relative'><object class='tableauViz' style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /><param name='embed_code_version' value='3' /><param name='path' value='" +
-        pathParam +
-        "' /><param name='toolbar' value='yes' /><param name='static_image' value='" +
-        staticImageParam +
-        "' /><param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /></object></div>";
-
-      var divElement = document.getElementById(vizId);
-      if (!divElement) {
-        showPreviewOnly(container);
-        return;
-      }
-
-      var vizElement = divElement.getElementsByTagName('object')[0];
-      if (!vizElement) {
-        showPreviewOnly(container);
-        return;
-      }
-
-      var containerWidth = container.clientWidth || width;
-      var aspectRatio = height / width;
-      vizElement.style.width = containerWidth + 'px';
-      vizElement.style.height = Math.round(containerWidth * aspectRatio) + 'px';
-
-      var scriptElement = document.createElement('script');
-      scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
-      scriptElement.async = true;
-      scriptElement.onerror = function () {
-        showPreviewOnly(container);
-      };
-      vizElement.parentNode.insertBefore(scriptElement, vizElement);
-
-      var attempts = 0;
-      var poll = window.setInterval(function () {
-        attempts += 1;
-        if (hasLoadedViz(container)) {
-          window.clearInterval(poll);
-          showLiveEmbed(container);
-          return;
-        }
-        if (attempts >= 20) {
-          window.clearInterval(poll);
-          showPreviewOnly(container);
-        }
-      }, 500);
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', mountTableau, { once: true });
-    } else {
-      mountTableau();
-    }
-  })();
-</script>
-
-<style>
+<style define:vars={{ tableauWidth: `${width}px`, tableauHeight: `${height}px` }}>
   .tableau-embed {
     width: 100%;
+    max-width: 100%;
     margin: 28px 0;
-    overflow: hidden;
     border: 1px solid var(--paper-line);
     border-radius: 8px;
     background: var(--paper-surface);
     box-shadow: var(--paper-shadow);
   }
 
-  .tableau-embed__live {
+  .tableau-embed__viewport {
     width: 100%;
+    overflow: hidden;
   }
 
-  .tableau-embed__live :global(.tableauPlaceholder) {
-    width: 100%;
-  }
-
-  .tableau-embed__preview {
+  .tableau-embed iframe {
     display: block;
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .tableau-embed.is-embed-ready .tableau-embed__preview {
-    display: none;
-  }
-
-  .tableau-embed.is-embed-failed .tableau-embed__live {
-    display: none;
-  }
-
-  .tableau-embed__preview img {
-    display: block;
-    width: 100%;
-    height: auto;
+    width: var(--tableauWidth);
+    height: var(--tableauHeight);
     border: 0;
-  }
-
-  .tableau-embed__preview-cta {
-    display: block;
-    padding: 14px 16px;
-    border-top: 1px solid var(--paper-line);
-    background: var(--paper-control-hover);
-    color: var(--paper-accent);
-    font-family: var(--font-ui-label);
-    font-size: 0.92rem;
-    font-weight: 600;
-    text-align: center;
+    overflow: hidden;
+    transform-origin: top left;
   }
 
   .tableau-embed__note {
@@ -209,3 +79,55 @@ const staticImageParam = staticImage.replace(/:/g, '&#58;').replace(/\//g, '&#47
     text-decoration: underline;
   }
 </style>
+
+<script>
+  const MIN_VIEWPORT_HEIGHT = 200;
+  const MAX_VIEWPORT_HEIGHT_RATIO = 0.85;
+
+  function getAvailableHeight(note: HTMLElement | null): number {
+    const noteHeight = note?.offsetHeight ?? 0;
+    const maxByViewport = window.innerHeight * MAX_VIEWPORT_HEIGHT_RATIO - noteHeight;
+
+    return Math.max(MIN_VIEWPORT_HEIGHT, maxByViewport);
+  }
+
+  function scaleTableauEmbeds() {
+    document.querySelectorAll<HTMLElement>('.tableau-embed').forEach((embed) => {
+      const viewport = embed.querySelector<HTMLElement>('.tableau-embed__viewport');
+      const iframe = embed.querySelector<HTMLIFrameElement>('iframe');
+      const note = embed.querySelector<HTMLElement>('.tableau-embed__note');
+      if (!viewport || !iframe) return;
+
+      const nativeWidth = Number(embed.dataset.nativeWidth) || 1016;
+      const nativeHeight = Number(embed.dataset.nativeHeight) || 900;
+      const containerWidth = viewport.clientWidth;
+      const availableHeight = getAvailableHeight(note);
+
+      const widthScale = containerWidth / nativeWidth;
+      const heightScale = availableHeight / nativeHeight;
+      const scale = Math.min(widthScale, heightScale);
+      const scaledWidth = nativeWidth * scale;
+      const offsetX = Math.max(0, (containerWidth - scaledWidth) / 2);
+
+      iframe.style.transform = `translateX(${offsetX}px) scale(${scale})`;
+      viewport.style.height = `${nativeHeight * scale}px`;
+    });
+  }
+
+  let rafId = 0;
+  function scheduleScale() {
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(scaleTableauEmbeds);
+  }
+
+  scaleTableauEmbeds();
+
+  window.addEventListener('resize', scheduleScale, { passive: true });
+
+  if ('ResizeObserver' in window) {
+    const observer = new ResizeObserver(scheduleScale);
+    document.querySelectorAll('.tableau-embed').forEach((embed) => {
+      observer.observe(embed);
+    });
+  }
+</script>

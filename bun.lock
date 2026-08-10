@@ -10,7 +10,7 @@
         "@astrojs/sitemap": "^3.7.3",
         "@expressive-code/plugin-collapsible-sections": "^0.44.1",
         "@expressive-code/plugin-line-numbers": "^0.44.1",
-        "@fontsource/maple-mono": "^5.3.0",
+        "@fontsource/ibm-plex-mono": "^5.3.0",
         "@navfolio/core": "github:navfolio/core",
         "@navfolio/mdx-components": "github:navfolio/mdx-components",
         "@navfolio/pages": "github:navfolio/pages",
@@ -201,6 +201,8 @@
 
     "@expressive-code/plugin-text-markers": ["@expressive-code/plugin-text-markers@0.44.1", "https://registry.npmmirror.com/@expressive-code/plugin-text-markers/-/plugin-text-markers-0.44.1.tgz", { "dependencies": { "@expressive-code/core": "^0.44.1" } }, "sha512-B3BsJoJ8CFMlcIX9f+X9tcI3C4zPDO601+YuLi9GheSTNro7ZfqSjLptMQKBHOWZvxnAtY5zvIX7iO/qtBhNBg=="],
 
+    "@fontsource/ibm-plex-mono": ["@fontsource/ibm-plex-mono@5.3.0", "", {}, "sha512-eTgnZjZEGk1QtD3ZstF+Vclo2HLAni8YMy34/DxllwZvyz1lR/1RF/xTiAquOBO7MvqBx8D2Ig2WCPMVfdZu7Q=="],
+
     "@fontsource/maple-mono": ["@fontsource/maple-mono@5.3.0", "https://registry.npmmirror.com/@fontsource/maple-mono/-/maple-mono-5.3.0.tgz", {}, "sha512-8N3FVDWphO/971tZIig9D558j9jf09fWYIXFjgv7DKJEvDjtgfATx1ScWHdTCsf+tufFS5M1bAa4AumVBKPhSQ=="],
 
     "@humanwhocodes/config-array": ["@humanwhocodes/config-array@0.13.0", "https://registry.npmmirror.com/@humanwhocodes/config-array/-/config-array-0.13.0.tgz", { "dependencies": { "@humanwhocodes/object-schema": "^2.0.3", "debug": "^4.3.1", "minimatch": "^3.0.5" } }, "sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw=="],
@@ -283,7 +285,7 @@
 
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@1.1.6", "https://registry.npmmirror.com/@napi-rs/wasm-runtime/-/wasm-runtime-1.1.6.tgz", { "dependencies": { "@tybys/wasm-util": "^0.10.3" }, "peerDependencies": { "@emnapi/core": "^1.7.1", "@emnapi/runtime": "^1.7.1" } }, "sha512-ZLv/JdUfkvOy9eCnnBaGfiO+XimbjebAeO+MRQqD/B+FR1tnRN0tpKSJHRbE8sFfS6aqsXZ67TQjfwfsxULVbg=="],
 
-    "@navfolio/core": ["@navfolio/core@github:navfolio/core#1e7954f", {}, "navfolio-core-1e7954f"],
+    "@navfolio/core": ["@navfolio/core@github:navfolio/core#1e7954f", {}, "navfolio-core-1e7954f", "sha512-QOYG+sFq379L9t9ND8ZU0di50akeTaEgA+o4pnjes5q7dL+Tmm0wogB38nEH2P4+jwh3Dzns+LgqPK+GCD+UYA=="],
 
     "@navfolio/mdx-components": ["@navfolio/mdx-components@github:navfolio/mdx-components#b1d864a", { "dependencies": { "fast-xml-parser": "^5.3.3" }, "peerDependencies": { "astro": "^5.0.0 || ^6.0.0 || ^7.0.0", "lucide-astro": "^0.556.0", "mermaid": "^11.0.0" } }, "navfolio-mdx-components-b1d864a", "sha512-uVqKhqLy7SSpnNu5OOD8lNxQH60UcsYED15+BYi8nFV+KFcUxAfTB5A7IsJeEoTvMHcRtBKXjS+HKzvVMmkZ4Q=="],
 
@@ -1553,9 +1555,7 @@
 
     "@eslint/eslintrc/ignore": ["ignore@5.3.2", "https://registry.npmmirror.com/ignore/-/ignore-5.3.2.tgz", {}, "sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g=="],
 
-    "@navfolio/page-media/@navfolio/mdx-components": ["@navfolio/mdx-components@github:navfolio/mdx-components#6997956", { "dependencies": { "fast-xml-parser": "^5.3.3" }, "peerDependencies": { "astro": "^5.0.0 || ^6.0.0 || ^7.0.0", "lucide-astro": "^0.556.0", "mermaid": "^11.0.0" } }, "navfolio-mdx-components-6997956"],
-
-    "@navfolio/theme-default/@navfolio/core": ["@navfolio/core@github:navfolio/core#1e7954f", {}, "navfolio-core-1e7954f", "sha512-QOYG+sFq379L9t9ND8ZU0di50akeTaEgA+o4pnjes5q7dL+Tmm0wogB38nEH2P4+jwh3Dzns+LgqPK+GCD+UYA=="],
+    "@navfolio/page-media/@navfolio/mdx-components": ["@navfolio/mdx-components@github:navfolio/mdx-components#6997956", { "dependencies": { "fast-xml-parser": "^5.3.3" }, "peerDependencies": { "astro": "^5.0.0 || ^6.0.0 || ^7.0.0", "lucide-astro": "^0.556.0", "mermaid": "^11.0.0" } }, "navfolio-mdx-components-6997956", "sha512-459DvdgbYrppxi4Ytyb6f+WyV+jPiFhP4fXcDwRnQnQPbhLg/CDWFlr+AQKqf942cfHkAI+CW3/MbJTYIpBHUQ=="],
 
     "@rollup/pluginutils/estree-walker": ["estree-walker@2.0.2", "https://registry.npmmirror.com/estree-walker/-/estree-walker-2.0.2.tgz", {}, "sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w=="],
 
