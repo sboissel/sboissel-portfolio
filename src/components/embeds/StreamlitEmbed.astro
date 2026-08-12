@@ -28,6 +28,12 @@ const { embedUrl, shareUrl, title = 'Streamlit dashboard', height = 850 } = Astr
 </div>
 
 <style define:vars={{ streamlitHeight: `${height}px` }}>
+  /* Give the embedded app more horizontal room than the default 720px article column. */
+  :global(.blog-detail-page .article-content:has(.streamlit-embed)) {
+    max-width: 960px;
+    width: min(100%, 960px);
+  }
+
   .streamlit-embed {
     width: 100%;
     max-width: 100%;
