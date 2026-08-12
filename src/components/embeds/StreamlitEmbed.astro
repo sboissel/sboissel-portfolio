@@ -1,0 +1,79 @@
+---
+interface Props {
+  embedUrl: string;
+  shareUrl: string;
+  title?: string;
+  height?: number;
+}
+
+const { embedUrl, shareUrl, title = 'Streamlit dashboard', height = 850 } = Astro.props;
+---
+
+<div class="streamlit-embed">
+  <div class="streamlit-embed__viewport">
+    <iframe
+      src={embedUrl}
+      title={title}
+      width="100%"
+      height={height}
+      allowfullscreen
+      loading="lazy"
+      tabindex="-1"></iframe>
+  </div>
+
+  <p class="streamlit-embed__note">
+    <a href={shareUrl} target="_blank" rel="noopener noreferrer">Open Streamlit app</a>{' '}
+    in a new tab for the full interactive experience if the embed does not load here.
+  </p>
+</div>
+
+<style define:vars={{ streamlitHeight: `${height}px` }}>
+  .streamlit-embed {
+    width: 100%;
+    max-width: 100%;
+    margin: 28px 0;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-surface);
+    box-shadow: var(--paper-shadow);
+    overflow: hidden;
+  }
+
+  .streamlit-embed__viewport {
+    width: 100%;
+    height: var(--streamlitHeight);
+    overflow: hidden;
+  }
+
+  .streamlit-embed iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .streamlit-embed__note {
+    margin: 0;
+    padding: 10px 14px;
+    border-top: 1px solid var(--paper-line);
+    color: var(--paper-ink-soft);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .streamlit-embed__note a {
+    color: var(--paper-accent);
+    text-decoration: none;
+  }
+
+  .streamlit-embed__note a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 720px) {
+    .streamlit-embed__viewport {
+      height: min(var(--streamlitHeight), 70vh);
+    }
+  }
+</style>
