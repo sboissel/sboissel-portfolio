@@ -38,18 +38,8 @@ This project connects Strava activity data to a reproducible analytics workflow 
 - Built a Python pipeline that refreshes Strava API tokens, downloads recent activities, and writes enriched CSVs for runs, rides, swims, and hikes
 - Added run pace-bin summaries and a rolling seven-day activity export for recurring analysis
 - Scheduled a weekly GitLab CI job to refresh committed data files on `main`
-- Published a Tableau story to explore training patterns and summary metrics
 - Shipped a Streamlit dashboard that mirrors the Tableau training overview, hosted on Streamlit Community Cloud and fed by the same CSV outputs
-
-## Tableau preview
-
-<TableauEmbed
-  embedUrl="https://public.tableau.com/views/StravaAnalysis_17852394882510/Story1?:embed=y&:display_count=no&:showVizHome=no&:size=1016,900"
-  shareUrl="https://public.tableau.com/app/profile/sandrine.boissel/viz/StravaAnalysis_17852394882510/Story1"
-  title="Runner's Dashboard"
-/>
-
-Click the link in the dashboard above to open the interactive story on Tableau Public.
+- Published a Tableau story to explore training patterns and summary metrics
 
 ## Streamlit preview
 
@@ -60,6 +50,16 @@ Click the link in the dashboard above to open the interactive story on Tableau P
 />
 
 The Streamlit app reads the pipeline’s CSV outputs—updated by the weekly GitLab sync—and mirrors the Tableau training overview for day-to-day exploration.
+
+## Tableau preview
+
+<TableauEmbed
+  embedUrl="https://public.tableau.com/views/StravaAnalysis_17852394882510/Story1?:embed=y&:display_count=no&:showVizHome=no&:size=1016,900"
+  shareUrl="https://public.tableau.com/app/profile/sandrine.boissel/viz/StravaAnalysis_17852394882510/Story1"
+  title="Runner's Dashboard"
+/>
+
+Click the link in the dashboard above to open the interactive story on Tableau Public.
 
 ## Tools
 
