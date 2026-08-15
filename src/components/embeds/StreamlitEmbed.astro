@@ -3,21 +3,29 @@ interface Props {
   embedUrl: string;
   shareUrl: string;
   title?: string;
+  width?: number;
   height?: number;
 }
 
-const { embedUrl, shareUrl, title = 'Streamlit dashboard', height = 850 } = Astro.props;
+const {
+  embedUrl,
+  shareUrl,
+  title = 'Streamlit dashboard',
+  width = 1180,
+  height = 850,
+} = Astro.props;
 ---
 
-<div class="streamlit-embed">
+<div class="streamlit-embed" data-native-width={width} data-native-height={height}>
   <div class="streamlit-embed__viewport">
     <iframe
       src={embedUrl}
       title={title}
-      width="100%"
+      width={width}
       height={height}
       allowfullscreen
       loading="lazy"
+      scrolling="no"
       tabindex="-1"></iframe>
   </div>
 
@@ -27,11 +35,11 @@ const { embedUrl, shareUrl, title = 'Streamlit dashboard', height = 850 } = Astr
   </p>
 </div>
 
-<style define:vars={{ streamlitHeight: `${height}px` }}>
-  /* Give the embedded app more horizontal room than the default 720px article column. */
+<style define:vars={{ streamlitWidth: `${width}px`, streamlitHeight: `${height}px` }}>
+  /* Match the Streamlit dashboard block-container width so the embed can scale 1:1. */
   :global(.blog-detail-page .article-content:has(.streamlit-embed)) {
-    max-width: 960px;
-    width: min(100%, 960px);
+    max-width: 1180px;
+    width: min(100%, 1180px);
   }
 
   .streamlit-embed {
@@ -47,15 +55,16 @@ const { embedUrl, shareUrl, title = 'Streamlit dashboard', height = 850 } = Astr
 
   .streamlit-embed__viewport {
     width: 100%;
-    height: var(--streamlitHeight);
     overflow: hidden;
   }
 
   .streamlit-embed iframe {
     display: block;
-    width: 100%;
-    height: 100%;
+    width: var(--streamlitWidth);
+    height: var(--streamlitHeight);
     border: 0;
+    overflow: hidden;
+    transform-origin: top left;
   }
 
   .streamlit-embed__note {
@@ -76,10 +85,42 @@ const { embedUrl, shareUrl, title = 'Streamlit dashboard', height = 850 } = Astr
   .streamlit-embed__note a:hover {
     text-decoration: underline;
   }
-
-  @media (max-width: 720px) {
-    .streamlit-embed__viewport {
-      height: min(var(--streamlitHeight), 70vh);
-    }
-  }
 </style>
+
+<script>
+  function scaleStreamlitEmbeds() {
+    document.querySelectorAll<HTMLElement>('.streamlit-embed').forEach((embed) => {
+      const viewport = embed.querySelector<HTMLElement>('.streamlit-embed__viewport');
+      const iframe = embed.querySelector<HTMLIFrameElement>('iframe');
+      if (!viewport || !iframe) return;
+
+      const nativeWidth = Number(embed.dataset.nativeWidth) || 1180;
+      const nativeHeight = Number(embed.dataset.nativeHeight) || 850;
+      const containerWidth = viewport.clientWidth;
+
+      const scale = containerWidth / nativeWidth;
+      const scaledWidth = nativeWidth * scale;
+      const offsetX = Math.max(0, (containerWidth - scaledWidth) / 2);
+
+      iframe.style.transform = `translateX(${offsetX}px) scale(${scale})`;
+      viewport.style.height = `${nativeHeight * scale}px`;
+    });
+  }
+
+  let rafId = 0;
+  function scheduleScale() {
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(scaleStreamlitEmbeds);
+  }
+
+  scaleStreamlitEmbeds();
+
+  window.addEventListener('resize', scheduleScale, { passive: true });
+
+  if ('ResizeObserver' in window) {
+    const observer = new ResizeObserver(scheduleScale);
+    document.querySelectorAll('.streamlit-embed').forEach((embed) => {
+      observer.observe(embed);
+    });
+  }
+</script>
