@@ -31,15 +31,15 @@ import StreamlitEmbed from '../../components/embeds/StreamlitEmbed.astro';
 
 ## Overview
 
-This project connects Strava activity data to a reproducible analytics workflow in the [GitLab repository](https://gitlab.com/sboissel1/strava-analytics). A Python pipeline refreshes activities from the Strava API, enriches runs with pace and heart-rate summaries, and writes CSV outputs for weekly and per-activity analysis. Results are published in two interactive dashboards—a [Streamlit app](https://strava-analytics-sboissel.streamlit.app/) for day-to-day exploration and a Tableau Public story for sharing training patterns more broadly.
+This project connects Strava activity data to a reproducible analytics workflow in the [GitLab repository](https://gitlab.com/sboissel1/strava-analytics). A Python pipeline refreshes activities from the Strava API, enriches runs with pace and heart-rate summaries, and writes CSV outputs for weekly and per-activity analysis. Results started as a Tableau Public prototype, then grew into a [Streamlit app](https://strava-analytics-sboissel.streamlit.app/) with much richer training, fitness, and race views on the same curated datasets.
 
 ## Approach
 
 - Built a Python pipeline that refreshes Strava API tokens, downloads recent activities, and writes enriched CSVs for runs, rides, swims, and hikes
 - Added run pace-bin summaries and a rolling seven-day activity export for recurring analysis
-- Scheduled a weekly GitLab CI job to refresh committed data files on `main`
-- Shipped a Streamlit dashboard that mirrors the Tableau training overview, hosted on Streamlit Community Cloud and fed by the same CSV outputs
-- Published a Tableau story to explore training patterns and summary metrics
+- Scheduled a daily GitLab CI job to refresh committed data files on `main`
+- Published an early Tableau story to prototype training patterns and summary metrics
+- Shipped a Streamlit dashboard on Community Cloud with deeper coverage—achievements, HR zones, shoe mileage, fitness trends, and race results—fed by the same CSV outputs
 
 ## Streamlit preview
 
@@ -49,7 +49,7 @@ This project connects Strava activity data to a reproducible analytics workflow 
   title="Strava Analytics — Streamlit"
 />
 
-The Streamlit app reads the pipeline’s CSV outputs—updated by the weekly GitLab sync—and mirrors the Tableau training overview for day-to-day exploration.
+The Streamlit app reads the pipeline’s CSV outputs—updated by the daily GitLab sync—and is the primary dashboard for exploring training, fitness, and race history.
 
 ## Tableau preview
 
@@ -59,7 +59,7 @@ The Streamlit app reads the pipeline’s CSV outputs—updated by the weekly Git
   title="Runner's Dashboard"
 />
 
-Click the link in the dashboard above to open the interactive story on Tableau Public.
+Click the link in the dashboard above to open the interactive story on Tableau Public. This was an early prototype; the Streamlit preview above has the fuller, up-to-date version.
 
 ## Tools
 
