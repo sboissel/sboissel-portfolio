@@ -11,12 +11,19 @@ const {
   embedUrl,
   shareUrl,
   title = 'Streamlit dashboard',
-  width = 1180,
+  // 1180px content + ~340px sidebar when navigation is expanded.
+  width = 1520,
   height = 850,
 } = Astro.props;
 ---
 
 <div class="streamlit-embed" data-native-width={width} data-native-height={height}>
+  <p class="streamlit-embed__sleep-note">
+    This Streamlit dashboard goes to sleep every 12 hours on Community Cloud. If the preview looks
+    blank, click inside the frame or{' '}
+    <a href={shareUrl} target="_blank" rel="noopener noreferrer">open the app</a> to wake it up.
+  </p>
+
   <div class="streamlit-embed__viewport">
     <iframe
       src={embedUrl}
@@ -51,6 +58,24 @@ const {
     background: var(--paper-surface);
     box-shadow: var(--paper-shadow);
     overflow: hidden;
+  }
+
+  .streamlit-embed__sleep-note {
+    margin: 0;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--paper-line);
+    color: var(--paper-ink-soft);
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  .streamlit-embed__sleep-note a {
+    color: var(--paper-accent);
+    text-decoration: none;
+  }
+
+  .streamlit-embed__sleep-note a:hover {
+    text-decoration: underline;
   }
 
   .streamlit-embed__viewport {
@@ -94,7 +119,7 @@ const {
       const iframe = embed.querySelector<HTMLIFrameElement>('iframe');
       if (!viewport || !iframe) return;
 
-      const nativeWidth = Number(embed.dataset.nativeWidth) || 1180;
+      const nativeWidth = Number(embed.dataset.nativeWidth) || 1520;
       const nativeHeight = Number(embed.dataset.nativeHeight) || 850;
       const containerWidth = viewport.clientWidth;
 
