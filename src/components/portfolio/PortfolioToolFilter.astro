@@ -1,16 +1,11 @@
 ---
+import { formatToolLabel } from '../../utils/format-tool-label';
+
 interface Props {
   tools: string[];
 }
 
 const { tools } = Astro.props;
-
-function formatToolLabel(tool: string) {
-  return tool
-    .split(/[-_\s]+/)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
-}
 ---
 
 <div class="portfolio-filter" data-portfolio-filter>

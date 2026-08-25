@@ -5,18 +5,13 @@ import FormattedDate from '../FormattedDate.astro';
 import Icon from '../Icon.astro';
 import MetadataItem from '../MetadataItem.astro';
 import { getSiteConfig } from '../../data/site';
-import { slugifyGroupName } from '../../utils/content-groups';
 import { getUiText } from '../../utils/ui-text';
-
-type TagLink = string | { name: string; slug: string };
 
 interface Props {
   title: string;
   description?: string;
   date?: Date;
-  wordCount: number;
-  readingTime: string;
-  tags?: TagLink[];
+  showDate?: boolean;
   categories?: { name: string; slug: string }[];
   series?: { name: string; slug: string; current?: number; total?: number }[];
   heroImage?: ImageMetadata | string;
@@ -32,9 +27,7 @@ const {
   title,
   description,
   date,
-  wordCount,
-  readingTime,
-  tags = [],
+  showDate = true,
   categories = [],
   series = [],
   heroImage,
@@ -45,17 +38,13 @@ const {
   pathname = Astro.url.pathname,
   showPageView = false,
 } = Astro.props;
-const tagLinks = tags.map((tag) =>
-  typeof tag === 'string' ? { name: tag, slug: slugifyGroupName(tag) } : tag,
-);
-const hasTags = tagLinks.length > 0;
 const hasCategories = categories.length > 0;
 const hasSeries = series.length > 0;
 const hasGroups = hasCategories || hasSeries;
 const isArchiveHeader = variant === 'archive';
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const ui = getUiText(await getSiteConfig());
-const wordCountLabel = ui.article.wordCount(wordCount);
+const showMetaLine = Boolean((date && showDate) || showPageView);
 ---
 
 <header
@@ -72,27 +61,16 @@ const wordCountLabel = ui.article.wordCount(wordCount);
           <h1 class="archive-title" data-pagefind-meta="title">
             {title}
           </h1>
-          <div class="meta-line" aria-label={ui.article.metadata}>
-            {date && (
-              <MetadataItem kind="date" separated={false}>
-                <FormattedDate date={date} />
-              </MetadataItem>
-            )}
-            <MetadataItem kind="words" separated={Boolean(date)}>
-              {wordCountLabel}
-            </MetadataItem>
-            <MetadataItem kind="reading">{readingTime}</MetadataItem>
-            {showPageView && <PageView pathname={pathname} />}
-            {hasTags && (
-              <MetadataItem kind="tags" class="tag-list">
-                {tagLinks.map((tag) => (
-                  <a class="tag" href={`${basePath}/tags/${tag.slug}/`}>
-                    #{tag.name}
-                  </a>
-                ))}
-              </MetadataItem>
-            )}
-          </div>
+          {showMetaLine && (
+            <div class="meta-line" aria-label={ui.article.metadata}>
+              {date && showDate && (
+                <MetadataItem kind="date" separated={false}>
+                  <FormattedDate date={date} />
+                </MetadataItem>
+              )}
+              {showPageView && <PageView pathname={pathname} />}
+            </div>
+          )}
           {hasGroups && (
             <div class="group-meta-line" aria-label={ui.article.groups}>
               {hasCategories && (
@@ -136,27 +114,16 @@ const wordCountLabel = ui.article.wordCount(wordCount);
       <>
         <h1 data-pagefind-meta="title">{title}</h1>
 
-        <div class="meta-line" aria-label={ui.article.metadata}>
-          {date && (
-            <MetadataItem kind="date" separated={false}>
-              <FormattedDate date={date} />
-            </MetadataItem>
-          )}
-          <MetadataItem kind="words" separated={Boolean(date)}>
-            {wordCountLabel}
-          </MetadataItem>
-          <MetadataItem kind="reading">{readingTime}</MetadataItem>
-          {showPageView && <PageView pathname={pathname} />}
-          {hasTags && (
-            <MetadataItem kind="tags" class="tag-list">
-              {tagLinks.map((tag) => (
-                <a class="tag" href={`${basePath}/tags/${tag.slug}/`}>
-                  #{tag.name}
-                </a>
-              ))}
-            </MetadataItem>
-          )}
-        </div>
+        {showMetaLine && (
+          <div class="meta-line" aria-label={ui.article.metadata}>
+            {date && showDate && (
+              <MetadataItem kind="date" separated={false}>
+                <FormattedDate date={date} />
+              </MetadataItem>
+            )}
+            {showPageView && <PageView pathname={pathname} />}
+          </div>
+        )}
         {hasGroups && (
           <div class="group-meta-line" aria-label={ui.article.groups}>
             {hasCategories && (
@@ -248,25 +215,6 @@ const wordCountLabel = ui.article.wordCount(wordCount);
     line-height: 1.5;
   }
 
-  :global(.tag-list .metadata-content) {
-    flex-wrap: wrap;
-    column-gap: 8px;
-    row-gap: 6px;
-  }
-
-  .tag {
-    color: var(--paper-accent);
-    font-family: var(--font-meta);
-    font-weight: 700;
-    text-decoration: none;
-    transition: color 180ms ease;
-  }
-
-  .tag:hover {
-    color: var(--paper-ink);
-  }
-
-  .tag:focus-visible,
   .group-link:focus-visible {
     border-radius: 4px;
     outline: 2px solid var(--paper-line-strong);

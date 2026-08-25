@@ -1,0 +1,63 @@
+---
+title: Biotech Business Intelligence Analytics
+description: Synthetic biotech R&D portfolio data, dbt models in DuckDB, and upcoming Tableau and Power BI executive dashboards.
+date: 2026-08-25
+draft: false
+showHeroImage: false
+portfolioType: personal
+projectStatus: in-progress
+motivation: I wanted a realistic but fictional dataset to practice the kind of portfolio, capacity, and financial reporting I build in biotech R&D settings—without using proprietary data. This project combines a reproducible Python generator, a dbt mart layer, and audience-specific dashboards for executive, functional, and program management.
+icon: chart-no-axes-combined
+iconColor: "#0f766e"
+tags: [biotech, analytics, dbt, dashboard, portfolio]
+tools: [python, dbt, duckdb, sql, tableau, power bi, git]
+links:
+  - label: Git repository
+    href: https://gitlab.com/sboissel1/bi-portfolio
+    kind: platform
+sidebar:
+  enable: true
+  toc: true
+  relatedPosts: false
+---
+
+import HeadingWithBadge from '../../components/portfolio/HeadingWithBadge.astro';
+
+## Overview
+
+This project turns a fictional biotech R&D portfolio into audience-specific analytics for executives tracking portfolio health, functional leaders managing capacity, and program managers monitoring delivery and spend. Tableau and Power BI dashboards (coming soon) sit on a shared mart layer so each view answers the questions that role actually asks, from milestone variance and KPI scorecards down to task-level execution and financial burn. Synthetic portfolio data is generated in Python, modeled with dbt in DuckDB, and versioned in the [Git repository](https://gitlab.com/sboissel1/bi-portfolio).
+
+## Approach
+
+- Built a synthetic data generator for projects, tasks, allocations, time logs, budgets, spend, milestones, and portfolio KPIs
+- Loaded raw CSVs into DuckDB and modeled dimensions and facts with dbt tests
+- Shifted staged dates forward so task status, actuals, and KPIs always read as up to date
+- Planned Tableau and Power BI dashboard suites on top of the mart layer (see below)
+
+## Data model
+
+The mart layer covers portfolio delivery, resource capacity, financial performance, and operational KPIs—enough to support executive summaries and drill-down detail views without exposing real program data.
+
+<HeadingWithBadge>
+
+## Dashboards
+
+</HeadingWithBadge>
+
+Interactive dashboards are coming soon. They will publish on Tableau Public and Power BI Service as each suite is ready.
+
+### Tableau
+
+- **Executive Portfolio Health** — milestone delivery, budget variance, project risk, and portfolio KPI performance
+- **Resource & Capacity Planning** — resource utilization, allocation load, and team capacity vs. demand
+- **R&D Operations Performance** — task cycle time, estimated vs. actual effort, and performance by work type
+
+### Power BI
+
+- **Project Delivery Overview** — project status, priority, task completion, and milestone performance across the portfolio
+- **Project Detail** — task-level execution, milestone status, resource allocation, and actual vs. estimated effort
+- **Financial Performance** — planned vs. actual spend, cost-category drivers, and budget variance by project
+
+## Tools
+
+Python · dbt · DuckDB · SQL · Tableau · Power BI · Git

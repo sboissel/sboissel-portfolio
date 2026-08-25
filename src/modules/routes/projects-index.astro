@@ -1,7 +1,9 @@
 ---
 import { getCollection, render } from 'astro:content';
 import {
+  Activity,
   Box,
+  ChartNoAxesCombined,
   Code2,
   Database,
   ExternalLink,
@@ -53,8 +55,10 @@ const projectsRoute = getPageModuleRoute(navfolioConfig, 'projects');
 const i18n = getI18n(siteConfig);
 
 const projectIcons = {
+  activity: Activity,
   github: Github,
   box: Box,
+  'chart-no-axes-combined': ChartNoAxesCombined,
   'code-2': Code2,
   database: Database,
   'file-code-2': FileCode2,

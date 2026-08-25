@@ -42,8 +42,8 @@ maxResults = 6
 [config.pages.projects]
 title = "Portfolio"
 kicker = "Selected work"
-subtitle = "Analytics and visualization projects."
-note = "Analytics and visualization projects in operations and biotech."
+subtitle = ""
+note = ""
 
 [config.profile]
 name = "Sandrine Boissel"
@@ -153,8 +153,8 @@ tooltip = "https://scholar.google.com/citations?user=PXMH-_IAAAAJ&hl=en"
 copy = false
 
 [[config.home.links]]
-label = "GitLab"
-icon = "gitlab"
+label = "Git"
+icon = "git"
 tooltip = "https://gitlab.com/sboissel1"
 copy = false
 

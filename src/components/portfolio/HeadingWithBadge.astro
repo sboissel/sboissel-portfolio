@@ -1,0 +1,29 @@
+---
+import ComingSoonBadge from './ComingSoonBadge.astro';
+
+interface Props {
+  label?: string;
+}
+
+const { label } = Astro.props;
+---
+
+<div class="heading-with-badge">
+  <slot />
+  <ComingSoonBadge label={label} />
+</div>
+
+<style is:global>
+  .article-content-ui .heading-with-badge {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 56px;
+    margin-bottom: 20px;
+  }
+
+  .article-content-ui .heading-with-badge :is(h1, h2, h3, h4, h5, h6) {
+    margin: 0;
+  }
+</style>

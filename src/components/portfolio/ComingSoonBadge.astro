@@ -1,0 +1,31 @@
+---
+interface Props {
+  label?: string;
+}
+
+const { label = 'Coming soon' } = Astro.props;
+---
+
+<button class="coming-soon-badge" type="button" disabled aria-disabled="true">
+  {label}
+</button>
+
+<style>
+  .coming-soon-badge {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 6px 14px;
+    border: 1px solid var(--paper-line);
+    border-radius: 999px;
+    background: var(--paper-control);
+    color: var(--paper-ink-soft);
+    font-family: var(--font-ui-label);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: uppercase;
+    cursor: default;
+  }
+</style>

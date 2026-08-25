@@ -39,6 +39,7 @@ const articleSchema = ({ image }: Parameters<CollectionSchemaFactory>[0]) =>
     description: z.string(),
     // Creation date. Accepts ISO 8601 strings and plain dates such as YYYY-MM-DD.
     date: z.coerce.date(),
+    showDate: z.boolean().optional().default(true),
     draft: z.boolean().optional().default(false),
     heroImage: z.optional(contentImageSchema({ image })),
     showHeroImage: z.boolean().optional().default(true),
@@ -495,12 +496,15 @@ const contact = defineCollection({
 const portfolioProjectSchema = (context: Parameters<CollectionSchemaFactory>[0]) =>
   articleSchema(context).extend({
     portfolioType: z.enum(['personal', 'sample']),
+    projectStatus: z.enum(['live', 'in-progress']).optional().default('live'),
     motivation: z.string().optional(),
     tools: z.array(z.string()).optional().default([]),
     icon: z
       .enum([
+        'activity',
         'github',
         'box',
+        'chart-no-axes-combined',
         'code-2',
         'database',
         'file-code-2',
@@ -548,8 +552,10 @@ const projects = defineCollection({
       sticky: z.union([z.boolean(), z.number().positive()]).optional().default(false),
       icon: z
         .enum([
+          'activity',
           'github',
           'box',
+          'chart-no-axes-combined',
           'code-2',
           'database',
           'file-code-2',

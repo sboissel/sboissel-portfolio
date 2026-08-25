@@ -1,5 +1,6 @@
 ---
 import {
+  Activity,
   BarChart3,
   BookOpen,
   BriefcaseBusiness,
@@ -15,7 +16,6 @@ import {
   GitBranch,
   GitCommitHorizontal,
   Github,
-  Gitlab,
   GraduationCap,
   Layers3,
   Link2,
@@ -49,6 +49,7 @@ interface Props extends Omit<LucideProps, 'name'> {
 const { name, size = 20, class: className, style, ...attrs } = Astro.props;
 
 const icons = {
+  activity: Activity,
   bilibili: Tv,
   book: BookOpen,
   'book-open-check': BookOpenCheck,
@@ -64,7 +65,8 @@ const icons = {
   external: ExternalLink,
   folder: FolderOpen,
   github: Github,
-  gitlab: Gitlab,
+  git: GitBranch,
+  gitlab: GitBranch,
   juejin: Gem,
   layers: Layers3,
   link: Link2,
